@@ -35,6 +35,11 @@ make build
 cd ..
 ```
 
+Download the lab config files:
+```sh
+git clone https://github.com/narbonnais/IBC_lab.git
+```
+
 ## Run localosmosis
 
 Osmosis have a testnet ready to run in `osmosis/tests/localosmosis`. On the project root, run:
