@@ -1,0 +1,65 @@
+version: "3"
+
+services:
+
+  osmosisd:
+    image: local:osmosis
+    build:
+      context: ../osmosis/
+      dockerfile: ../hub/dockerfiles/osmosis.Dockerfile
+      args:
+        RUNNER_IMAGE: alpine:3.16
+        GO_VERSION: 1.18
+    volumes:
+      - ./config/osmosis/nativeDenomPoolA.json:/osmosis/nativeDenomPoolA.json
+      - ./config/osmosis/nativeDenomPoolB.json:/osmosis/nativeDenomPoolB.json
+      - ./config/osmosis/nativeDenomThreeAssetPool.json:/osmosis/nativeDenomThreeAssetPool.json
+      - ./config/osmosis/setup.sh:/osmosis/setup.sh
+      - ./env/.osmosisd-local/:/osmosis/.osmosisd/
+    entrypoint: ["./setup.sh"]
+    networks:
+      localnet:
+        ipv4_address: 172.20.0.2
+
+  gaiad:
+    image: local:gaia
+    build:
+      context: ../gaia/
+      dockerfile: ../hub/dockerfiles/gaia.Dockerfile
+      args:
+        RUNNER_IMAGE: alpine:3.16
+        GO_VERSION: 1.18
+    volumes:
+      - ./config/gaia/setup.sh:/gaia/setup.sh
+      - ./env/.gaiad-local/:/gaia/.gaiad/
+    entrypoint: ["./setup.sh"]
+    networks:
+      localnet:
+        ipv4_address: 172.20.0.3
+
+  rly:
+    image: local:relayer
+    build:
+      context: ../relayer/
+      dockerfile: ../hub/dockerfiles/relayer.Dockerfile
+      args:
+        RUNNER_IMAGE: alpine:3.16
+        GO_VERSION: 1.18
+    volumes:
+      - ./config/relayer/chains:/relayer/chains
+      - ./config/relayer/paths:/relayer/paths
+      - ./config/relayer/setup.sh:/relayer/setup.sh
+      - ./env/.relayer/:/relayer/.relayer/
+    # tty: true
+    entrypoint: ["./setup.sh"]
+    networks:
+      localnet:
+        ipv4_address: 172.20.0.4
+
+networks:
+  localnet:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.20.0.0/16

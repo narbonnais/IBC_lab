@@ -1,0 +1,49 @@
+global:
+    api-listen-addr: :5183
+    timeout: 10s
+    memo: ""
+    light-cache-size: 20
+chains:
+    localgaia:
+        type: cosmos
+        value:
+            key: lg-test1
+            chain-id: localgaia
+            rpc-addr: http://172.20.0.3:26657
+            account-prefix: cosmos
+            keyring-backend: test
+            gas-adjustment: 1.2
+            gas-prices: 0.01uatom
+            min-gas-amount: 0
+            debug: true
+            timeout: 20s
+            output-format: json
+            sign-mode: direct
+    localosmosis:
+        type: cosmos
+        value:
+            key: lo-test1
+            chain-id: localosmosis
+            rpc-addr: http://172.20.0.2:26657
+            account-prefix: osmo
+            keyring-backend: test
+            gas-adjustment: 1.2
+            gas-prices: 0.01uosmo
+            min-gas-amount: 0
+            debug: true
+            timeout: 20s
+            output-format: json
+            sign-mode: direct
+paths:
+    localgaia-localosmosis:
+        src:
+            chain-id: localgaia
+            client-id: 07-tendermint-0
+            connection-id: connection-0
+        dst:
+            chain-id: localosmosis
+            client-id: 07-tendermint-0
+            connection-id: connection-0
+        src-channel-filter:
+            rule: ""
+            channel-list: []
